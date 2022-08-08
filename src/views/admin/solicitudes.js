@@ -61,26 +61,43 @@ getOrders();
     const userCollectionRef = collection(db, "orders");
 
     const data = await getDocs(userCollectionRef);
-      console.log("elemeto "+ data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
       setOrders(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
+
+  const handleSubmitWater =  async () => {
+    tipo("water");
+
+  };
+
+
   const handleSubmitGas =  async () => {
 
-    const userCollectionRef = collection(db, "orders");
+    tipo("gas");
+  };
 
+
+  const handleSubmitRecicle =  async () => {
+
+    tipo("recicle");
+  };
+
+
+  async function tipo (tipo) {
+    const userCollectionRef = collection(db, "orders");
+    let datos = [];
     const data = await getDocs(userCollectionRef);
 
     for(let key in data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))) {
+      if ((data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[key].type) === tipo) {
 
-      if ((data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[key].name) === "type") {
-        setOrders(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-       } else {
-        setOrders(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+          datos.push({"id": data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[key].id,  "type": data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[key].type,  "date": data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[key].date });
        }
-    }
-  };
 
+    }
+    setOrders(datos);
+    console.log("datos "+ datos);
+  }
   return (
     <>
       <CCard className="mb-4">
@@ -90,16 +107,16 @@ getOrders();
               <strong style={{ fontSize: "25px" }} >Solicitudes</strong>
             </CCol>
             <CCol xs={1}>
-              <CButton style={button_style} >Todo</CButton>
+              <CButton onClick={handleSubmit }style={button_style} >Todo</CButton>
             </CCol>
             <CCol xs={1}>
-              <CButton style={button_style} >Gas</CButton>
+              <CButton onClick={handleSubmitGas }style={button_style} >Gas</CButton>
             </CCol >
             <CCol xs={1}>
-              <CButton style={button_style} >Agua</CButton>
+              <CButton onClick={handleSubmitWater } style={button_style} >Agua</CButton>
             </CCol>
             <CCol xs={1}>
-              <CButton style={button_style} >Chatarra</CButton>
+              <CButton onClick={handleSubmitRecicle} style={button_style} >Chatarra</CButton>
             </CCol>
             <CCol xs={3}>
               <CFormInput
@@ -136,7 +153,7 @@ getOrders();
                  <CTableRow key={order.id}>
                  <CTableDataCell>NO EXITE EN BD</CTableDataCell>
                  <CTableDataCell>NO EXISTE EN BD</CTableDataCell>
-                 <CTableDataCell>{order.waterBottle}</CTableDataCell>
+                 <CTableDataCell>NO EXISTE</CTableDataCell>
                  <CTableDataCell>NO EXITE EN BD</CTableDataCell>
                  <CTableDataCell>{order.date}</CTableDataCell>
                  <CTableDataCell>{order.type}</CTableDataCell>
