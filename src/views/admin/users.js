@@ -1,4 +1,15 @@
 import React from 'react'
+import { useState, useEffect } from "react";
+import {db} from "./firebase"
+
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 
 import {
   CAvatar,
@@ -22,32 +33,98 @@ import {
 
 } from '@coreui/react'
 
+
 const Dashboard = () => {
 
   const button_style = {
     width: "90px",
-    color: "primary"
+    color: "primary",
+
   }
 
+
+  const [users, setUsers] = useState([]);
+
+
+  useEffect(() => {
+    const getUsers = async () => {
+
+      const userCollectionRef = collection(db, "users");
+
+      const data = await getDocs(userCollectionRef);
+      console.log("elemeto "+ data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+
+};
+    getUsers();
+  }, []);
+
+  const handleSubmit = async () => {
+
+    const userCollectionRef = collection(db, "users");
+
+    const data = await getDocs(userCollectionRef);
+      console.log("elemeto "+ data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
+  const handleSubmitGas =  async () => {
+
+    const userCollectionRef = collection(db, "users");
+
+    const data = await getDocs(userCollectionRef);
+
+    for(let key in data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))) {
+
+      if ((data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[key].name) === "gas") {
+        setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+       } else {
+       setUsers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+       }
+    }
+  };
+
+  const handleSubmitRecicle =  async () => {
+
+    const userCollectionRef = collection(db, "users");
+
+    const data2 = await getDocs(userCollectionRef);
+    console.log("TINI")
+
+    for(let key2 in data2.docs.map((doc) => ({ ...doc.data(), id: doc.id }))) {
+
+      if ((data2.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[key2].name) === "recicle") {
+        console.log("q nos importa" + data2.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[key2].name)
+
+        setUsers(data2.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      }
+    }
+  };
+
+
+
   return (
-    <>
+
+
+<>
       <CCard className="mb-4">
+
         <CCardHeader>
           <CRow>
             <CCol xs={5}>
               <strong style={{ fontSize: "25px" }} >Usuarios</strong>
             </CCol>
             <CCol xs={1}>
-              <CButton style={button_style} >Todo</CButton>
+              <CButton onClick={handleSubmit} style={button_style} >Todos</CButton>
             </CCol>
             <CCol xs={1}>
-              <CButton style={button_style} >Gas</CButton>
+              <CButton   onClick={handleSubmitGas} style={button_style} >Gas</CButton>
             </CCol >
             <CCol xs={1}>
-              <CButton style={button_style} >Agua</CButton>
+              <CButton   onClick={handleSubmitGas} style={button_style} >Agua</CButton>
             </CCol>
             <CCol xs={1}>
-              <CButton style={button_style} >Chatarra</CButton>
+              <CButton   onClick={handleSubmitRecicle}  style={button_style} >Chatarra</CButton>
             </CCol>
             <CCol xs={3}>
               <CFormInput
@@ -63,7 +140,7 @@ const Dashboard = () => {
         <CCardBody>
 
         <CRow>
-          
+
         </CRow>
         <CRow >
 
@@ -79,42 +156,32 @@ const Dashboard = () => {
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              <CTableRow>
-                <CTableHeaderCell scope="row">1</CTableHeaderCell>
-                <CTableDataCell>Marisara Melendez</CTableDataCell>
-                <CTableDataCell>tnegore@gmail.com</CTableDataCell>
-                <CTableDataCell>098123456</CTableDataCell>
-                <CTableDataCell>2000118292</CTableDataCell>
-                <CTableDataCell>ABC-999</CTableDataCell>
-              </CTableRow>
-              <CTableRow>
-                <CTableHeaderCell scope="row">1</CTableHeaderCell>
-                <CTableDataCell>Ana Guevara</CTableDataCell>
-                <CTableDataCell>mmsanchez@gmail.com</CTableDataCell>
-                <CTableDataCell>098123456</CTableDataCell>
-                <CTableDataCell>2000118292</CTableDataCell>
-                <CTableDataCell>ABC-999</CTableDataCell>
-              </CTableRow>
-              <CTableRow>
-                <CTableHeaderCell scope="row">1</CTableHeaderCell>
-                <CTableDataCell>Ernesto Cuevas</CTableDataCell>
-                <CTableDataCell>jaypalrn@gmail.com</CTableDataCell>
-                <CTableDataCell>098123456</CTableDataCell>
-                <CTableDataCell>2000118292</CTableDataCell>
-                <CTableDataCell>ABC-999</CTableDataCell>
-              </CTableRow>
+              {users.map((user) => (
+                 <CTableRow key={user.name}>
+                 <CTableDataCell>NO EXITE EN BD</CTableDataCell>
+                 <CTableDataCell>{user.name}</CTableDataCell>
+                 <CTableDataCell>{user.email}</CTableDataCell>
+                 <CTableDataCell>NO EXITE EN BD</CTableDataCell>
+                 <CTableDataCell>NO EXITE EN BD</CTableDataCell>
+                 <CTableDataCell>NO EXITE EN BD</CTableDataCell>
+               </CTableRow>
+
+            ))}
             </CTableBody>
           </CTable>
           </CRow>
 
         </CCardBody>
         <CCardFooter>
-         
+
         </CCardFooter>
       </CCard>
 
     </>
+
   )
+  //{users.map((user) => { })};
+
 }
 
 export default Dashboard
