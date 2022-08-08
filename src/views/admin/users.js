@@ -89,12 +89,10 @@ const Dashboard = () => {
     const userCollectionRef = collection(db, "users");
 
     const data2 = await getDocs(userCollectionRef);
-    console.log("TINI")
 
     for(let key2 in data2.docs.map((doc) => ({ ...doc.data(), id: doc.id }))) {
 
       if ((data2.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[key2].name) === "recicle") {
-        console.log("q nos importa" + data2.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[key2].name)
 
         setUsers(data2.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
       }

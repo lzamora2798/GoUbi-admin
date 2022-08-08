@@ -1,4 +1,16 @@
 import React from 'react'
+import {db} from "./firebase"
+
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+
+import { useState, useEffect } from "react";
 
 import {
   CAvatar,
@@ -28,6 +40,46 @@ const Dashboard = () => {
     width: "90px",
     color: "primary"
   }
+
+  const [orders, setOrders] = useState([]);
+
+
+  useEffect(() => {
+    const getOrders = async () => {
+
+      const userCollectionRef = collection(db, "orders");
+
+      const data = await getDocs(userCollectionRef);
+      setOrders(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+
+};
+getOrders();
+  }, []);
+
+  const handleSubmit = async () => {
+
+    const userCollectionRef = collection(db, "orders");
+
+    const data = await getDocs(userCollectionRef);
+      console.log("elemeto "+ data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setOrders(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
+  const handleSubmitGas =  async () => {
+
+    const userCollectionRef = collection(db, "orders");
+
+    const data = await getDocs(userCollectionRef);
+
+    for(let key in data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))) {
+
+      if ((data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[key].name) === "type") {
+        setOrders(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+       } else {
+        setOrders(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+       }
+    }
+  };
 
   return (
     <>
@@ -63,7 +115,7 @@ const Dashboard = () => {
         <CCardBody>
 
         <CRow>
-          
+
         </CRow>
         <CRow >
 
@@ -78,31 +130,19 @@ const Dashboard = () => {
                 <CTableHeaderCell scope="col">Servicio</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
+
             <CTableBody>
-              <CTableRow>
-                <CTableHeaderCell scope="row">1</CTableHeaderCell>
-                <CTableDataCell>Armau Tenas</CTableDataCell>
-                <CTableDataCell>45</CTableDataCell>
-                <CTableDataCell>58</CTableDataCell>
-                <CTableDataCell>5/10/2022 15:30pm</CTableDataCell>
-                <CTableDataCell>Gas</CTableDataCell>
-              </CTableRow>
-              <CTableRow>
-                <CTableHeaderCell scope="row">2</CTableHeaderCell>
-                <CTableDataCell>German Sanches</CTableDataCell>
-                <CTableDataCell>34</CTableDataCell>
-                <CTableDataCell>40</CTableDataCell>
-                <CTableDataCell>5/10/2022 15:30pm</CTableDataCell>
-                <CTableDataCell>Agua</CTableDataCell>
-              </CTableRow>
-              <CTableRow>
-                <CTableHeaderCell scope="row">2</CTableHeaderCell>
-                <CTableDataCell>Ernesto Cuevas</CTableDataCell>
-                <CTableDataCell>35</CTableDataCell>
-                <CTableDataCell>35</CTableDataCell>
-                <CTableDataCell>5/10/2022 15:30pm</CTableDataCell>
-                <CTableDataCell>Chatarra</CTableDataCell>
-              </CTableRow>
+            {orders.map((order) => (
+                 <CTableRow key={order.id}>
+                 <CTableDataCell>NO EXITE EN BD</CTableDataCell>
+                 <CTableDataCell>NO EXISTE EN BD</CTableDataCell>
+                 <CTableDataCell>{order.waterBottle}</CTableDataCell>
+                 <CTableDataCell>NO EXITE EN BD</CTableDataCell>
+                 <CTableDataCell>{order.date}</CTableDataCell>
+                 <CTableDataCell>{order.type}</CTableDataCell>
+               </CTableRow>
+
+            ))}
             </CTableBody>
           </CTable>
           </CRow>
@@ -110,7 +150,7 @@ const Dashboard = () => {
         </CCardBody>
         <CCardFooter>
           <CRow xs={{ cols: 1 }} md={{ cols: 5 }} className="text-center">
-           
+
           </CRow>
         </CCardFooter>
       </CCard>
