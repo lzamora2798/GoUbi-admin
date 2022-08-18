@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from "react-router-dom";
 import {
   CAvatar,
   CBadge,
@@ -26,6 +27,14 @@ import CIcon from '@coreui/icons-react'
 import avatar8 from './../../assets/images/avatars/8.jpg'
 
 const AppHeaderDropdown = () => {
+  const navigate = useNavigate();
+
+  const workin = () =>{
+
+    navigate("/login")
+    localStorage.clear()
+  }
+
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
@@ -37,13 +46,13 @@ const AppHeaderDropdown = () => {
       <CDropdownMenu className="pt-0" placement="bottom-end">
 
         <CDropdownHeader className="bg-light fw-semibold py-2">Settings</CDropdownHeader>
-    
+
         <CDropdownItem href="#">
           <CIcon icon={cilSettings} className="me-2" />
           Settings
         </CDropdownItem>
         <CDropdownDivider />
-        <CDropdownItem href="/login">
+        <CDropdownItem onClick={workin}>
           <CIcon icon={cilLockLocked} className="me-2" />
           Log Out
         </CDropdownItem>
