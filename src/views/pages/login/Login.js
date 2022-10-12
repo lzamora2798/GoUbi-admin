@@ -19,7 +19,7 @@ import logo from 'src/assets/logo.png'
 import {auth} from '../../../firebase'
 import {signInWithEmailAndPassword,signOut} from "firebase/auth"
 import UserDataService from "../../../services/users.service";
-
+import Swal from 'sweetalert2'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -31,25 +31,44 @@ const Login = () => {
       navigate("/solicitudes")
     }
   }, [])
+
+  const showErrorLoad = (data) =>{
+
+    let message = data;
+    if (data.includes("auth/invalid-email")){
+      message = "Usuario o Contrasena incorrectos"
+    }
+    console.log(data)
+    Swal.fire({
+      title: 'Error!',
+      text: message,
+      icon: 'error',
+      confirmButtonText: 'Ok',
+      confirmButtonColor: "#181818", 
+    })
+  }
+  
   const workin = () =>{
    
-    console.log(email)
+    Swal.showLoading()
     signInWithEmailAndPassword(auth,email,password).then((user)=>{
       if(user){
         UserDataService.getUser(user.user.uid).then((data)=>{
           const type = data.get("type")
+          
           if (type === "admin"){
+            Swal.close()
             navigate("/solicitudes")
           }else{
-            console.log("user not allowed",type)
+            showErrorLoad("Este usuario no esta permitido")
           }
         }).catch((err)=>{
-          console.log(err)
+          showErrorLoad(err.toString())
         })
         
       }
     }).catch((err)=>{
-      console.log("error",err)
+      showErrorLoad(err.toString())
     })
     
   }

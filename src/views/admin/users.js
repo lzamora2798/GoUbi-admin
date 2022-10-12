@@ -3,7 +3,7 @@ import React , {useEffect,useReducer,useState}from 'react'
 import {
   CAvatar,
   CButton,
-  CButtonGroup,
+  CIcon,
   CCard,
   CCardBody,
   CCardFooter,
@@ -38,6 +38,9 @@ const Dashboard = () => {
     console.log(users)
   };
 
+  const disableUser = (id,flag) =>{
+    console.log(id,flag)
+  }
   const button_style = {
     width: "90px",
     color: "primary"
@@ -90,6 +93,7 @@ const Dashboard = () => {
                 <CTableHeaderCell scope="col">Numero</CTableHeaderCell>
                 <CTableHeaderCell scope="col">Cedula</CTableHeaderCell>
                 <CTableHeaderCell scope="col">Placa</CTableHeaderCell>
+                <CTableHeaderCell scope="col">Acciones</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
@@ -103,6 +107,11 @@ const Dashboard = () => {
                 <CTableDataCell>{doc.phone}</CTableDataCell>
                 <CTableDataCell>{doc.cedula}</CTableDataCell>
                 <CTableDataCell>{doc.placa}</CTableDataCell>
+                <CTableDataCell>
+                  <CButton onClick={disableUser(doc.id,false)}>
+                    disable
+                  </CButton>
+                </CTableDataCell>
               </CTableRow>)
               } )}
             </CTableBody>
