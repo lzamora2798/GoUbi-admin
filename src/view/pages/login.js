@@ -16,9 +16,9 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import logo from 'src/assets/logo.png'
-import {app} from '../../admin/f'
+// import {app} from '../../admin/f'
 import swal from 'sweetalert';
-import Home from "../register/Register"
+
 
 
 const Login = (props) => {
@@ -70,10 +70,10 @@ const Login = (props) => {
     };
 
     const handleSubmit = (e) => {
-      e.preventDefault();
-      const correo = e.target.emailId.value;
-      const password = e.target.passwordId.value;
-      iniciarSesion(correo, password)
+    //   e.preventDefault();
+    //   const correo = e.target.emailId.value;
+    //   const password = e.target.passwordId.value;
+    //   iniciarSesion(correo, password)
   }
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
