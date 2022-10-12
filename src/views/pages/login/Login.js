@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState,useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import {
   CButton,
@@ -16,10 +16,42 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import logo from 'src/assets/logo.png'
+import {auth} from '../../../firebase'
+import {signInWithEmailAndPassword,signOut} from "firebase/auth"
+import UserDataService from "../../../services/users.service";
+
+
 const Login = () => {
   const navigate = useNavigate();
+  const [email,setEmail] = useState("");
+  const [password,setPassword]=useState("");
+  
+  useEffect(() => {
+    if(auth.currentUser){
+      navigate("/solicitudes")
+    }
+  }, [])
   const workin = () =>{
-    navigate("/solicitudes")
+   
+    console.log(email)
+    signInWithEmailAndPassword(auth,email,password).then((user)=>{
+      if(user){
+        UserDataService.getUser(user.user.uid).then((data)=>{
+          const type = data.get("type")
+          if (type === "admin"){
+            navigate("/solicitudes")
+          }else{
+            console.log("user not allowed",type)
+          }
+        }).catch((err)=>{
+          console.log(err)
+        })
+        
+      }
+    }).catch((err)=>{
+      console.log("error",err)
+    })
+    
   }
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
@@ -39,7 +71,10 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Email"  />
+                      <CFormInput placeholder="Email" value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}  />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -49,6 +84,10 @@ const Login = () => {
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
+                       value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}  
                       />
                     </CInputGroup>
                     <CRow>

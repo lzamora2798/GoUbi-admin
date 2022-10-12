@@ -26,6 +26,11 @@ import CIcon from '@coreui/icons-react'
 import avatar8 from './../../assets/images/avatars/8.jpg'
 
 const AppHeaderDropdown = () => {
+
+  const logOut = ()=>{
+    console.log("chau")
+  }
+
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
@@ -36,16 +41,16 @@ const AppHeaderDropdown = () => {
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
 
-        <CDropdownHeader className="bg-light fw-semibold py-2">Settings</CDropdownHeader>
+        <CDropdownHeader className="bg-light fw-semibold py-2">Menu</CDropdownHeader>
     
-        <CDropdownItem href="#">
+        <CDropdownItem href="/parametros">
           <CIcon icon={cilSettings} className="me-2" />
-          Settings
+          Configuraciones
         </CDropdownItem>
         <CDropdownDivider />
         <CDropdownItem href="/login">
-          <CIcon icon={cilLockLocked} className="me-2" />
-          Log Out
+          <CIcon icon={cilLockLocked} className="me-2"/>
+          Cerrar Sesion
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>

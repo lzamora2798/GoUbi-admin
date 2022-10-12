@@ -1,4 +1,4 @@
-import React from 'react'
+import React , {useEffect,useReducer,useState}from 'react'
 
 import {
   CAvatar,
@@ -17,12 +17,26 @@ import {
   CTableRow,
   CTableHeaderCell,
   CTableDataCell,
-  CCardText
 
 
 } from '@coreui/react'
 
+import UserDataService from "../../services/users.service";
+
 const Dashboard = () => {
+  
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    getUsers();
+
+  }, []);
+
+  const getUsers = async () => {
+    const data = await UserDataService.getAllUser();
+    
+    setUsers(data.docs.map((doc) => ({...doc.data(),id:doc.id})));
+    console.log(users)
+  };
 
   const button_style = {
     width: "90px",
@@ -79,30 +93,18 @@ const Dashboard = () => {
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              <CTableRow>
-                <CTableHeaderCell scope="row">1</CTableHeaderCell>
-                <CTableDataCell>Marisara Melendez</CTableDataCell>
-                <CTableDataCell>tnegore@gmail.com</CTableDataCell>
-                <CTableDataCell>098123456</CTableDataCell>
-                <CTableDataCell>2000118292</CTableDataCell>
-                <CTableDataCell>ABC-999</CTableDataCell>
-              </CTableRow>
-              <CTableRow>
-                <CTableHeaderCell scope="row">1</CTableHeaderCell>
-                <CTableDataCell>Ana Guevara</CTableDataCell>
-                <CTableDataCell>mmsanchez@gmail.com</CTableDataCell>
-                <CTableDataCell>098123456</CTableDataCell>
-                <CTableDataCell>2000118292</CTableDataCell>
-                <CTableDataCell>ABC-999</CTableDataCell>
-              </CTableRow>
-              <CTableRow>
-                <CTableHeaderCell scope="row">1</CTableHeaderCell>
-                <CTableDataCell>Ernesto Cuevas</CTableDataCell>
-                <CTableDataCell>jaypalrn@gmail.com</CTableDataCell>
-                <CTableDataCell>098123456</CTableDataCell>
-                <CTableDataCell>2000118292</CTableDataCell>
-                <CTableDataCell>ABC-999</CTableDataCell>
-              </CTableRow>
+              
+              {users.map((doc, index) => { 
+                return(
+                <CTableRow key={index}>
+                <CTableHeaderCell scope="row">{index+1}</CTableHeaderCell>
+                <CTableDataCell>{doc.name} {doc.lastname}</CTableDataCell>
+                <CTableDataCell>{doc.email}</CTableDataCell>
+                <CTableDataCell>{doc.phone}</CTableDataCell>
+                <CTableDataCell>{doc.cedula}</CTableDataCell>
+                <CTableDataCell>{doc.placa}</CTableDataCell>
+              </CTableRow>)
+              } )}
             </CTableBody>
           </CTable>
           </CRow>
