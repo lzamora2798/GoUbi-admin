@@ -1,4 +1,4 @@
-import React from 'react'
+import React ,{useEffect,useState}from 'react'
 
 import {
   CAvatar,
@@ -17,16 +17,54 @@ import {
   CTableRow,
   CTableHeaderCell,
   CTableDataCell,
-  CCardText
-
 
 } from '@coreui/react'
+import { useNavigate } from "react-router-dom";
 
+import UserDataService from "../../services/users.service";
+import OrderDataService from "../../services/orders.service";
+import Swal from 'sweetalert2'
+import {auth} from '../../firebase'
 const Dashboard = () => {
 
   const button_style = {
     width: "90px",
     color: "primary"
+  }
+
+  const [users, setUsers] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if(!auth.currentUser){
+      navigate("/login")
+    }else{
+      getData();
+    }
+    
+  }, []);
+
+  const getData = async () => {
+    Swal.showLoading();
+    const data = await UserDataService.getAllUser();
+    const data2 = await OrderDataService.getAllOrders();
+    const lista = data.docs.map((doc) => ({...doc.data(),id:doc.id}));
+    const lista2 = data2.docs.map((doc) => ({...doc.data(),id:doc.id}));
+    setUsers(lista);
+    setOrders(lista2);
+    if(users && orders){
+      Swal.close()
+    }
+  };
+
+  const findName = (uid) =>{
+    let name =""
+    users.forEach((val)=>{
+      if(val.id === uid){
+        name = `${val.name} ${val.lastname}`
+      }
+    })
+    return name;
   }
 
   return (
@@ -72,6 +110,7 @@ const Dashboard = () => {
               <CTableRow>
                 <CTableHeaderCell scope="col">No</CTableHeaderCell>
                 <CTableHeaderCell scope="col">Conductor</CTableHeaderCell>
+                <CTableHeaderCell scope="col">Clinte</CTableHeaderCell>
                 <CTableHeaderCell scope="col">Ordenes Completas</CTableHeaderCell>
                 <CTableHeaderCell scope="col">Ordenes Recibidas</CTableHeaderCell>
                 <CTableHeaderCell scope="col">Fecha</CTableHeaderCell>
@@ -79,30 +118,19 @@ const Dashboard = () => {
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              <CTableRow>
-                <CTableHeaderCell scope="row">1</CTableHeaderCell>
-                <CTableDataCell>Armau Tenas</CTableDataCell>
-                <CTableDataCell>45</CTableDataCell>
-                <CTableDataCell>58</CTableDataCell>
-                <CTableDataCell>5/10/2022 15:30pm</CTableDataCell>
-                <CTableDataCell>Gas</CTableDataCell>
-              </CTableRow>
-              <CTableRow>
-                <CTableHeaderCell scope="row">2</CTableHeaderCell>
-                <CTableDataCell>German Sanches</CTableDataCell>
-                <CTableDataCell>34</CTableDataCell>
-                <CTableDataCell>40</CTableDataCell>
-                <CTableDataCell>5/10/2022 15:30pm</CTableDataCell>
-                <CTableDataCell>Agua</CTableDataCell>
-              </CTableRow>
-              <CTableRow>
-                <CTableHeaderCell scope="row">2</CTableHeaderCell>
-                <CTableDataCell>Ernesto Cuevas</CTableDataCell>
-                <CTableDataCell>35</CTableDataCell>
-                <CTableDataCell>35</CTableDataCell>
-                <CTableDataCell>5/10/2022 15:30pm</CTableDataCell>
-                <CTableDataCell>Chatarra</CTableDataCell>
-              </CTableRow>
+              
+              {orders.map((doc, index) => { 
+                return(
+                <CTableRow key={index}>
+                <CTableHeaderCell scope="row">{index+1}</CTableHeaderCell>
+                <CTableDataCell>{findName(doc.uid)}</CTableDataCell>
+                <CTableDataCell>{findName(doc.dui)}</CTableDataCell>
+                <CTableDataCell>Na</CTableDataCell>
+                <CTableDataCell>Na</CTableDataCell>
+                <CTableDataCell>10/06/2022 10:03 </CTableDataCell>
+                <CTableDataCell>{doc.type}</CTableDataCell>
+              </CTableRow>)
+              } )}
             </CTableBody>
           </CTable>
           </CRow>

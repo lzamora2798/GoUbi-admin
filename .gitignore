@@ -12,6 +12,7 @@ package-lock.json
 
 ./src/firebase.js
 
+/.env
 # misc
 .eslintcache
 .DS_Store

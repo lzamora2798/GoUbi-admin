@@ -38,7 +38,10 @@ const Login = () => {
     if (data.includes("auth/invalid-email")){
       message = "Usuario o Contrasena incorrectos"
     }
-    console.log(data)
+    if (data.includes("auth/wrong-password")){
+      message = "Usuario o Contrasena incorrectos"
+    }
+    
     Swal.fire({
       title: 'Error!',
       text: message,
