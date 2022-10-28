@@ -20,6 +20,19 @@ class HttpService {
      
   };
 
+  returnMetrics = () => {
+
+    const options = {
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': process.env.REACT_APP_API_KEY,
+      }
+    }
+  
+    return axios.get('https://us-central1-goubi-360003.cloudfunctions.net/onMetrics',options);
+     
+  };
+
 }
 
 export default new HttpService();

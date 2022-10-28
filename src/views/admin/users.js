@@ -147,7 +147,7 @@ const Dashboard = () => {
             <CTableHead>
               <CTableRow>
                 <CTableHeaderCell scope="col">No</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Conductor</CTableHeaderCell>
+                <CTableHeaderCell scope="col">Nombre</CTableHeaderCell>
                 <CTableHeaderCell scope="col">Email</CTableHeaderCell>
                 <CTableHeaderCell scope="col">Numero</CTableHeaderCell>
                 <CTableHeaderCell scope="col">Cedula</CTableHeaderCell>

@@ -119,9 +119,9 @@ const Login = () => {
                       
                     </CRow>
                     <CRow>
-                    <CButton color="link" className="px-0" >
+                    {/* <CButton color="link" className="px-0" >
                     Registrate
-                    </CButton>
+                    </CButton> */}
                     <CButton color="link">
                          Recuperar Contrasena
                       </CButton>

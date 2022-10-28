@@ -20,7 +20,7 @@ import {
 
 } from '@coreui/react'
 import { useNavigate } from "react-router-dom";
-
+import HttpService from "../../services/http.service";
 import UserDataService from "../../services/users.service";
 import OrderDataService from "../../services/orders.service";
 import Swal from 'sweetalert2'
@@ -34,12 +34,14 @@ const Dashboard = () => {
 
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [metrics, setMetrics] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
     if(!auth.currentUser){
       navigate("/login")
     }else{
       getData();
+      getDeliveryMetrics();
     }
     
   }, []);
@@ -56,6 +58,15 @@ const Dashboard = () => {
       Swal.close()
     }
   };
+
+  const getDeliveryMetrics = async () =>{
+    HttpService.returnMetrics().then((val)=>{
+      if(val.data){
+        setMetrics(val.data.data)
+        
+      }
+    })
+  }
 
   const findName = (uid) =>{
     let name =""
@@ -110,24 +121,22 @@ const Dashboard = () => {
               <CTableRow>
                 <CTableHeaderCell scope="col">No</CTableHeaderCell>
                 <CTableHeaderCell scope="col">Conductor</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Clinte</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Ordenes Completas</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Ordenes Recibidas</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Fecha</CTableHeaderCell>
+                <CTableHeaderCell scope="col"># Ordenes Completas</CTableHeaderCell>
+                <CTableHeaderCell scope="col"># Ordenes Canceladas por cliente </CTableHeaderCell>
+                <CTableHeaderCell scope="col"># Ordenes Canceladas por delivery </CTableHeaderCell>
                 <CTableHeaderCell scope="col">Servicio</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
               
-              {orders.map((doc, index) => { 
+              {metrics.map((doc, index) => { 
                 return(
                 <CTableRow key={index}>
                 <CTableHeaderCell scope="row">{index+1}</CTableHeaderCell>
-                <CTableDataCell>{findName(doc.uid)}</CTableDataCell>
-                <CTableDataCell>{findName(doc.dui)}</CTableDataCell>
-                <CTableDataCell>Na</CTableDataCell>
-                <CTableDataCell>Na</CTableDataCell>
-                <CTableDataCell>10/06/2022 10:03 </CTableDataCell>
+                <CTableDataCell>{doc.name}</CTableDataCell>
+                <CTableDataCell>{doc.c1}</CTableDataCell>
+                <CTableDataCell>{doc.c2}</CTableDataCell>
+                <CTableDataCell>{doc.c3}</CTableDataCell>
                 <CTableDataCell>{doc.type}</CTableDataCell>
               </CTableRow>)
               } )}
