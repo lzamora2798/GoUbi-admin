@@ -2,10 +2,8 @@ import React , {useEffect,useState}from 'react'
 
 import {
   CButton,
-  CButtonGroup,
   CCard,
   CCardBody,
-  CCardFooter,
   CFormLabel,
   CCardHeader,
   CCol,
@@ -15,12 +13,10 @@ import {
 } from '@coreui/react'
 
 import Swal from 'sweetalert2'
-import {auth} from '../../firebase'
 import { useNavigate } from "react-router-dom";
 
 import SettingsDataService from "../../services/settings.service";
-import { async } from '@firebase/util';
-
+import Cookies from 'js-cookie'
 
 const Dashboard = () => {
 
@@ -29,12 +25,12 @@ const Dashboard = () => {
   const [radio2,setRadio2]=useState(0)
   const [tiempo,setTiempo]=useState(0)
   useEffect(() => {
-    if(!auth.currentUser){
+    let cookie = Cookies.get('access-token')
+    if(!cookie){
       navigate("/login")
     }else{
       getSettings();
     }
-    
   }, []);
   
   const getSettings = async () => {

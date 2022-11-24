@@ -1,20 +1,21 @@
-import React from 'react'
+import React , {useEffect}from 'react'
+import { useNavigate } from "react-router-dom";
 
 import {
-    CAvatar,
-    CButton,
-    CButtonGroup,
     CCard,
     CCardBody,
     CCardFooter,
     CCardHeader,
-    CCol,
-    CProgress,
-    CRow,
   } from '@coreui/react'
-
+  import Cookies from 'js-cookie'
 const Dashboard = () => {
- 
+  const navigate = useNavigate();
+  useEffect(() => {
+    let cookie = Cookies.get('access-token')
+    if(!cookie){
+      navigate("/login")
+    }
+  }, []);
 
 
   return (

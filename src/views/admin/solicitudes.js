@@ -1,9 +1,7 @@
 import React ,{useEffect,useState}from 'react'
 
 import {
-  CAvatar,
   CButton,
-  CButtonGroup,
   CCard,
   CCardBody,
   CCardFooter,
