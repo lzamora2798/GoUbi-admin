@@ -11,24 +11,21 @@ import {
   CHeaderText
 } from '@coreui/react'
 import {
-  cilBell,
-  cilCreditCard,
-  cilCommentSquare,
-  cilEnvelopeOpen,
-  cilFile,
   cilLockLocked,
   cilSettings,
-  cilTask,
   cilUser,
 } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-
+import { useNavigate } from "react-router-dom";
 import avatar8 from './../../assets/images/avatars/8.jpg'
+import Cookies from 'js-cookie'
 
 const AppHeaderDropdown = () => {
-
+  const navigate = useNavigate();
   const logOut = ()=>{
     console.log("chau")
+    Cookies.remove('access-token')
+    navigate("/login")
   }
 
   return (
@@ -37,7 +34,7 @@ const AppHeaderDropdown = () => {
         <CHeaderText className='p-2'>
           Administrador GoUbi
           </CHeaderText>
-        <CAvatar src={avatar8} size="md" />
+          <CIcon icon={cilUser} className="me-2"/>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
 
@@ -48,7 +45,7 @@ const AppHeaderDropdown = () => {
           Configuraciones
         </CDropdownItem>
         <CDropdownDivider />
-        <CDropdownItem href="/login">
+        <CDropdownItem onClick={()=>logOut()} >
           <CIcon icon={cilLockLocked} className="me-2"/>
           Cerrar Sesion
         </CDropdownItem>

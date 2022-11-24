@@ -20,6 +20,7 @@ import {auth} from '../../../firebase'
 import {signInWithEmailAndPassword,signOut} from "firebase/auth"
 import UserDataService from "../../../services/users.service";
 import Swal from 'sweetalert2'
+import Cookies from 'js-cookie'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,7 +28,8 @@ const Login = () => {
   const [password,setPassword]=useState("");
   
   useEffect(() => {
-    if(auth.currentUser){
+    let cookie = Cookies.get('access-token')
+    if(cookie){
       navigate("/solicitudes")
     }
   }, [])
@@ -56,11 +58,12 @@ const Login = () => {
     Swal.showLoading()
     signInWithEmailAndPassword(auth,email,password).then((user)=>{
       if(user){
-        UserDataService.getUser(user.user.uid).then((data)=>{
+        UserDataService.getUser(user.user.uid).then(async (data)=>{
           const type = data.get("type")
-          
           if (type === "admin"){
+            const token = (await user.user.getIdTokenResult()).token;
             Swal.close()
+            Cookies.set('access-token',token ,{ expires: 1 })
             navigate("/solicitudes")
           }else{
             showErrorLoad("Este usuario no esta permitido")

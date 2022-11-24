@@ -22,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 import UserDataService from "../../services/users.service";
 import HttpService from "../../services/http.service";
 import Swal from 'sweetalert2'
-import {auth} from '../../firebase'
+import Cookies from 'js-cookie'
 
 const Dashboard = () => {
   
@@ -30,7 +30,9 @@ const Dashboard = () => {
   const [rusers, setRusers] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    if(!auth.currentUser){
+
+    let cookie = Cookies.get('access-token')
+    if(!cookie){
       navigate("/login")
     }else{
       getUsers();

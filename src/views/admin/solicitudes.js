@@ -24,7 +24,8 @@ import HttpService from "../../services/http.service";
 import UserDataService from "../../services/users.service";
 import OrderDataService from "../../services/orders.service";
 import Swal from 'sweetalert2'
-import {auth} from '../../firebase'
+import Cookies from 'js-cookie'
+
 const Dashboard = () => {
 
   const button_style = {
@@ -35,9 +36,11 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
   const [metrics, setMetrics] = useState([]);
+  const [rmetrics, setRMetrics] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    if(!auth.currentUser){
+    let cookie = Cookies.get('access-token')
+    if(!cookie){
       navigate("/login")
     }else{
       getData();
@@ -63,9 +66,27 @@ const Dashboard = () => {
     HttpService.returnMetrics().then((val)=>{
       if(val.data){
         setMetrics(val.data.data)
-        
+        setRMetrics(val.data.data)
       }
     })
+  }
+  
+  const updateList = (info) =>{
+    if(info === 'gas'){
+      let tmp_list = rmetrics.filter(x=> x.type === 'gas')
+      setMetrics(tmp_list)
+    }
+    if(info === 'water'){
+      let tmp_list = rmetrics.filter(x=> x.type === 'water')
+      setMetrics(tmp_list)
+    }
+    if(info === 'todo'){
+      setMetrics(rmetrics)
+    }
+    if(info === 'recicle'){
+      let tmp_list = rmetrics.filter(x=> x.type === 'recicle')
+      setMetrics(tmp_list)
+    }
   }
 
   const findName = (uid) =>{
@@ -78,6 +99,15 @@ const Dashboard = () => {
     return name;
   }
 
+  const searchTextBar = (value) =>{
+    if(value.length){
+      let tmp_list = rmetrics.filter(x=>  x.name.toLowerCase().includes(value.toLowerCase()))
+      setMetrics(tmp_list)
+    }else{
+      setMetrics(rmetrics)
+    }
+  }
+
   return (
     <>
       <CCard className="mb-4">
@@ -87,16 +117,16 @@ const Dashboard = () => {
               <strong style={{ fontSize: "25px" }} >Solicitudes</strong>
             </CCol>
             <CCol xs={1}>
-              <CButton style={button_style} >Todo</CButton>
+              <CButton  onClick={()=>{updateList('todo')}} style={button_style} >Todo</CButton>
             </CCol>
             <CCol xs={1}>
-              <CButton style={button_style} >Gas</CButton>
+              <CButton onClick={()=>{updateList('gas')}} style={button_style} >Gas</CButton>
             </CCol >
             <CCol xs={1}>
-              <CButton style={button_style} >Agua</CButton>
+              <CButton onClick={()=>{updateList('water')}} style={button_style} >Agua</CButton>
             </CCol>
             <CCol xs={1}>
-              <CButton style={button_style} >Chatarra</CButton>
+              <CButton onClick={()=>{updateList('recicle')}} style={button_style} >Chatarra</CButton>
             </CCol>
             <CCol xs={3}>
               <CFormInput
@@ -104,6 +134,9 @@ const Dashboard = () => {
                 id="exampleFormControlInput1"
                 placeholder="Escribe un Nombre"
                 aria-describedby="exampleFormControlInputHelpInline"
+                onChange={(e) => {
+                  searchTextBar(e.target.value);
+                }}
               />
             </CCol>
           </CRow>
