@@ -1,4 +1,4 @@
-import { React,useEffect }  from 'react'
+import React, { useState,useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import {
   CButton,
@@ -16,64 +16,67 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import logo from 'src/assets/logo.png'
-import {app} from '../../admin/f'
-import swal from 'sweetalert';
-import Home from "../register/Register"
+import {auth} from '../../../firebase'
+import {signInWithEmailAndPassword,signOut} from "firebase/auth"
+import UserDataService from "../../../services/users.service";
+import Swal from 'sweetalert2'
+import Cookies from 'js-cookie'
 
-
-const Login = (props) => {
-
-  //const [isRegistrando, setIsRegistrando] = React.useState(false);
-
+const Login = () => {
   const navigate = useNavigate();
+  const [email,setEmail] = useState("");
+  const [password,setPassword]=useState("");
+  
   useEffect(() => {
-    // const user= localStorage.getItem('user');
-    // console.log('este es el user',user);
-    // if(user){
-    //   console.log('en el iffffffffffffff',user);
-    //   navigate("/solicitudes")
+    let cookie = Cookies.get('access-token')
+    if(cookie){
+      navigate("/solicitudes")
+    }
+  }, [])
 
-    // }
-  }, []);
+  const showErrorLoad = (data) =>{
 
-
-  const workin = () =>{
-    navigate("/solicitudes")
-  }
-
-  const alertError = () => {
-
-    swal({
-      title: "Autentificacion Erronea",
-      text: "Usuario o Contraseña Incorrecta",
-      icon : "error"
+    let message = data;
+    if (data.includes("auth/invalid-email")){
+      message = "Usuario o Contrasena incorrectos"
+    }
+    if (data.includes("auth/wrong-password")){
+      message = "Usuario o Contrasena incorrectos"
+    }
+    
+    Swal.fire({
+      title: 'Error!',
+      text: message,
+      icon: 'error',
+      confirmButtonText: 'Ok',
+      confirmButtonColor: "#181818", 
     })
   }
-
-    const iniciarSesion = (correo, password) => {
-      app
-        .auth()
-        .signInWithEmailAndPassword(correo, password)
-        .then((usuarioFirebase)  => {
-          console.log("sesión iniciada con:", usuarioFirebase.user);
-          localStorage.setItem('user',usuarioFirebase.user);
-          workin();
-
-        }).catch((err) => {
-          alertError()
-          console.log("Error inicio de Session");
-        });
-
-
-
-
-    };
-
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      const correo = e.target.emailId.value;
-      const password = e.target.passwordId.value;
-      iniciarSesion(correo, password)
+  
+  const workin = () =>{
+   
+    Swal.showLoading()
+    signInWithEmailAndPassword(auth,email,password).then((user)=>{
+      if(user){
+        UserDataService.getUser(user.user.uid).then(async (data)=>{
+          const type = data.get("type")
+          if (type === "admin"){
+            const token = (await user.user.getIdTokenResult()).token;
+            Swal.close()
+            Cookies.set('access-token',token ,{ expires: 1 })
+            navigate("/solicitudes")
+          }else{
+            showErrorLoad("Este usuario no esta permitido")
+          }
+        }).catch((err)=>{
+          showErrorLoad(err.toString())
+        })
+        
+      }
+    }).catch((err)=>{
+      showErrorLoad(err.toString())
+    })
+    
   }
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
@@ -93,7 +96,10 @@ const Login = (props) => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Email" id="emailId" required  />
+                      <CFormInput placeholder="Email" value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}  />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -104,7 +110,10 @@ const Login = (props) => {
                         placeholder="Password"
                         id="passwordId"
                         autoComplete="current-password"
-                        required
+                       value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}  
                       />
                     </CInputGroup>
                     <CRow>
@@ -115,9 +124,9 @@ const Login = (props) => {
 
                     </CRow>
                     <CRow>
-                    <CButton color="link" className="px-0" >
+                    {/* <CButton color="link" className="px-0" >
                     Registrate
-                    </CButton>
+                    </CButton> */}
                     <CButton color="link">
                          Recuperar Contrasena
                       </CButton>
